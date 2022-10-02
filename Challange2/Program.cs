@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using System.Collections;
+using System.Linq;
 
 
 namespace Challange2
@@ -72,8 +69,8 @@ namespace Challange2
         public static FileStructure GetFoldersAndFiles(string mainFolderPath)
         {
             FileStructure folderStructure = new FileStructure();
-            Dictionary<string, long> FoldersInfo = new Dictionary<string, long>();
-            Dictionary<string, long> FilesInfo = new Dictionary<string, long>();
+            Dictionary<string, long> FolderInfo = new Dictionary<string, long>();
+            Dictionary<string, long> FileInfo = new Dictionary<string, long>();
 
             string rootPath = $@"{mainFolderPath}";
             if (!Directory.Exists(rootPath))
@@ -85,34 +82,34 @@ namespace Challange2
             
             DirectoryInfo place = new DirectoryInfo(rootPath);
             FileInfo[] files = place.GetFiles(); //find files
-            string[] filesNames = files.Select(x => x.Name).ToArray();
-            foreach (var file in filesNames) //find sizes
+            string[] fileNames = files.Select(x => x.Name).ToArray();
+            foreach (var file in fileNames) //find sizes
             {
                 //DirectoryInfo newDir = new DirectoryInfo($@"{rootPath}\{file}");
                // long size = newDir.EnumerateFiles().Sum(x => x.Length); ;
                 long size = new FileInfo($@"{rootPath}\{file}").Length;
-                FilesInfo.Add(file.ToString(), size);
+                FileInfo.Add(file.ToString(), size);
             }
-            folderStructure.Files = FilesInfo;
-            folderStructure.SubFolders = FilesInfo;
+            folderStructure.Files = FileInfo;
+            folderStructure.SubFolders = FileInfo;
 
 
-            string[] SubFoldersPaths = Directory.GetDirectories(rootPath, "*", SearchOption.TopDirectoryOnly); // find subfolders paths
+            string[] SubFolderPaths = Directory.GetDirectories(rootPath, "*", SearchOption.TopDirectoryOnly); // find subfolders paths
 
-            List<string> SubFoldersNames = new List<string>();
-            foreach (var subFolder in SubFoldersPaths) // add just folder name
+            List<string> SubFolderNames = new List<string>();
+            foreach (var subFolder in SubFolderPaths) // add just folder name
             {
                 string folder = subFolder.Split('\\').Last();
                
-                SubFoldersNames.Add(folder);   
+                SubFolderNames.Add(folder);   
             }
-            foreach(var folder in SubFoldersNames)
+            foreach(var folder in SubFolderNames)
             {
                 DirectoryInfo newDir = new DirectoryInfo($"{rootPath}\\{folder}");
                 long size = FolderSize(newDir);
-                FoldersInfo.Add(folder.ToString(), size);
+                FolderInfo.Add(folder.ToString(), size);
             }
-            folderStructure.SubFolders = FoldersInfo;
+            folderStructure.SubFolders = FolderInfo;
 
             return folderStructure;
 
